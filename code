@@ -1,0 +1,27 @@
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+import time
+
+driver = webdriver.Chrome()
+driver.get("https://id.atlassian.com/login")
+
+# Login
+WebDriverWait(driver, 15).until(EC.presence_of_element_located((By.ID, "username"))).send_keys("your_email@example.com")
+driver.find_element(By.ID, "login-submit").click()
+WebDriverWait(driver, 15).until(EC.presence_of_element_located((By.ID, "password"))).send_keys("your_password")
+driver.find_element(By.ID, "login-submit").click()
+
+# Go to Members
+time.sleep(10)
+driver.get("https://trello.com/YOUR-WORKSPACE/members")
+time.sleep(5)
+
+# Extract names
+members = driver.find_elements(By.CLASS_NAME, "member-full-name")
+for member in members:
+    print("👤", member.text)
+
+driver.save_screenshot("trello_members.png")
+driver.quit()
